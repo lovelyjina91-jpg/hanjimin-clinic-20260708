@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>한지민 오답 클리닉 · 수량형용사 & 형용사</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background: #eef3f2; color: #2d3436; min-height: 100vh; display: flex; justify-content: center; padding: 22px 14px; }
+  .wrap { width: 100%; max-width: 540px; }
+  .card { background: #fff; border-radius: 18px; padding: 26px 22px; box-shadow: 0 3px 14px rgba(46,125,110,0.10); margin-bottom: 14px; }
+  h1 { font-size: 1.3rem; color: #2e7d6e; margin-bottom: 8px; letter-spacing: -0.3px; }
+  .brand { font-size: 0.8rem; color: #93a3a0; margin-top: 4px; }
+  .sub { font-size: 0.9rem; color: #6b7d79; margin-bottom: 18px; line-height: 1.55; }
+  .tag { display:inline-block; background:#e2efec; color:#2e7d6e; font-size:0.74rem; font-weight:bold; padding:3px 9px; border-radius:20px; margin-bottom:10px; }
+  input[type=text] { width: 100%; padding: 14px; font-size: 1.05rem; border: 1.5px solid #cdd8d5; border-radius: 11px; }
+  input[type=text]:focus { outline:none; border-color:#2e7d6e; }
+  .btn { display: block; width: 100%; margin-top: 14px; padding: 15px; font-size: 1.05rem; font-weight: bold; color: #fff; background: #2e7d6e; border: none; border-radius: 11px; cursor: pointer; }
+  .btn:disabled { background: #b8c4c2; cursor: default; }
+  .btn.ghost { background:#f0f5f4; color:#2e7d6e; border:1.5px solid #cfe0dc; }
+  .progress { font-size: 0.82rem; color: #8797a3; margin-bottom: 8px; }
+  .bar { height:6px; background:#e7edeb; border-radius:6px; overflow:hidden; margin-bottom:16px; }
+  .bar > i { display:block; height:100%; background:#2e7d6e; width:0; transition:width .2s; }
+  .qorig { font-size:0.76rem; color:#a2b0ac; margin-bottom:6px; }
+  .qtext { font-size: 1.1rem; line-height: 1.6; margin-bottom: 18px; font-weight: bold; }
+  .qtext .en { color:#1f5a4f; }
+  .choice { display: flex; align-items:center; width: 100%; text-align: left; padding: 14px 15px; margin-bottom: 9px; font-size: 1rem; background: #f6f9f8; border: 1.5px solid #dde5e3; border-radius: 11px; cursor: pointer; transition: background .12s; }
+  .choice:hover { background:#eef5f3; }
+  .choice:active { background: #e2efec; }
+  .num { color: #2e7d6e; font-weight: bold; margin-right: 9px; min-width:1.2em; }
+  .score-big { font-size: 2.1rem; font-weight: bold; color: #2e7d6e; text-align: center; margin: 8px 0 2px; }
+  .score-msg { text-align:center; color:#6b7d79; font-size:0.92rem; margin-bottom:6px; }
+  #submit-status { text-align: center; font-size: 0.9rem; margin: 12px 0; min-height: 1.2em; }
+  .exp { background: #f6f9f8; border-left: 4px solid #2e7d6e; border-radius: 9px; padding: 12px 14px; margin-bottom: 10px; font-size: 0.93rem; line-height: 1.6; }
+  .exp.wrong { border-left-color: #c0392b; background:#fbf1f0; }
+  .exp b { color: #2e7d6e; }
+  .exp.wrong b { color: #c0392b; }
+  .exp .head { font-weight:bold; margin-bottom:4px; display:block; }
+  .kakao-box { white-space:pre-wrap; background:#f6f9f8; border:1px dashed #cfe0dc; border-radius:10px; padding:12px 14px; font-size:0.88rem; color:#40514d; margin-top:10px; line-height:1.5; }
+  .hidden { display: none; }
+  .hint { font-size:0.8rem; color:#9aa8a4; text-align:center; margin-top:10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 시작 화면 -->
+  <div class="card" id="start-card">
+    <span class="tag">오답 클리닉 · 변형문제</span>
+    <h1>한지민 학생 클리닉 🌱</h1>
+    <p class="sub">수량형용사(many·much·few·little·some·any)와 형용사 어순을 복습해요.<br>원본 시험 문제를 변형한 <b>32문항</b>이에요. 이름을 입력하고 시작하세요!</p>
+    <input type="text" id="name-input" placeholder="이름을 입력하세요" maxlength="20" autocomplete="off">
+    <button class="btn" id="start-btn" disabled>시작하기</button>
+    <p class="brand">제공 · 영핏 지나티처</p>
+  </div>
+
+  <!-- 문제 화면 -->
+  <div class="card hidden" id="quiz-card">
+    <div class="progress" id="progress"></div>
+    <div class="bar"><i id="bar-fill"></i></div>
+    <div class="qorig" id="qorig"></div>
+    <div class="qtext" id="qtext"></div>
+    <div id="choices"></div>
+    <p class="hint">보기를 누르거나 키보드 1~5 숫자키로도 선택할 수 있어요</p>
+  </div>
+
+  <!-- 결과 화면 -->
+  <div class="card hidden" id="result-card">
+    <h1>수고했어요! 🎉</h1>
+    <div class="score-big" id="score-line"></div>
+    <div class="score-msg" id="score-msg"></div>
+    <div id="submit-status"></div>
+    <button class="btn ghost" id="kakao-btn">지나티처에게 보낼 결과 복사하기 (카톡 백업용)</button>
+    <div class="kakao-box hidden" id="kakao-box"></div>
+    <div style="margin-top:22px">
+      <p class="sub" style="margin-bottom:12px; font-weight:bold; color:#2e7d6e">📝 전체 해설</p>
+      <div id="explanations"></div>
+    </div>
+    <p class="brand" style="text-align:center; margin-top:18px">제공 · 영핏 지나티처</p>
+  </div>
+
+</div>
+
+<script>
+"use strict";
+
+/* ══════ 결과 자동 전송 (영핏 공통) ══════ */
+var ENGFIT_SUBMIT_URL = "https://script.google.com/macros/s/AKfycbz5IC3cEtaBGW10qZhrjwtjdtGugmcmYb4ZTHS4k-1LOqTRYzW-LfoAPyFB_ShjAqNp/exec";
+
+async function engfitSubmit(r) {
+  var body = JSON.stringify(r);
+  try {
+    var res = await fetch(ENGFIT_SUBMIT_URL, { method: "POST", body: body });
+    var j = await res.json();
+    return j.ok === true;
+  } catch (e) {
+    try {
+      await fetch(ENGFIT_SUBMIT_URL, { method: "POST", mode: "no-cors", body: body });
+      return true;
+    } catch (e2) { return false; }
+  }
+}
+
+var _engfitSent = false;
+async function engfitSubmitWithStatus(r) {
+  if (_engfitSent) return; _engfitSent = true;
+  var el = document.getElementById("submit-status");
+  el.textContent = "결과 전송 중...";
+  el.style.color = "#888";
+  var ok = await engfitSubmit(r);
+  if (ok) { el.textContent = "✓ 결과가 지나티처에게 자동 전송되었어요"; el.style.color = "#2e7d6e"; }
+  else { el.textContent = "전송이 안 됐어요 — 아래 버튼으로 복사해서 카톡으로 보내주세요!"; el.style.color = "#c0392b"; }
+}
+
+/* ══════ 문제 데이터 (원본 16문항 × 변형 2 = 32) ══════ */
+var QUESTIONS = [
+  /* 원본 13 · 형용사가 꾸미는 명사 찾기 */
+  { orig:"원본 13번", q:"형용사가 <b>꾸며주는 명사</b>는? <span class='en'>She bought a beautiful dress.</span>",
+    choices:["dress","beautiful","bought","she","a"], answer:"dress",
+    exp:"형용사 <b>beautiful</b>(아름다운)이 바로 뒤의 명사 <b>dress</b>(드레스)를 꾸며줘요. 형용사는 '어떤' 명사인지 설명해 준답니다." },
+  { orig:"원본 13번", q:"형용사가 <b>꾸며주는 명사</b>는? <span class='en'>We saw a tall building.</span>",
+    choices:["building","tall","saw","we","a"], answer:"building",
+    exp:"<b>tall</b>(높은)이 명사 <b>building</b>(건물)을 꾸며줘요. '형용사 + 명사' 순서로 붙어 다녀요." },
+
+  /* 원본 14 · few / a little 문맥 */
+  { orig:"원본 14번", q:"우리말에 맞게: '나는 <b>돈이 거의 없어서</b> 아무것도 못 샀다.'<br><span class='en'>I had ____ money, so I couldn't buy anything.</span>",
+    choices:["little","a little","few","a few","many"], answer:"little",
+    exp:"'거의 없다'는 부정의 느낌이라 <b>little</b>! money는 셀 수 없는 명사라서 few가 아니라 little을 써요. a little은 '조금 있다'(긍정)라 문맥과 안 맞아요." },
+  { orig:"원본 14번", q:"우리말에 맞게: '시간이 <b>조금 있어서</b> 우리는 커피를 마셨다.'<br><span class='en'>We had ____ time, so we drank coffee.</span>",
+    choices:["a little","little","a few","few","much"], answer:"a little",
+    exp:"'조금 있다'(긍정)는 <b>a little</b>! time은 셀 수 없어서 a few가 아니라 a little을 써요. little(거의 없다)이면 커피 마실 여유가 없겠죠?" },
+
+  /* 원본 15 · many + 복수명사 */
+  { orig:"원본 15번", q:"빈칸에 알맞은 것은? <span class='en'>____ students were in the classroom.</span>",
+    choices:["Many","Much","A little","Little","Any"], answer:"Many",
+    exp:"students는 셀 수 있는 복수명사라서 <b>Many</b>! much·little·a little은 셀 수 없는 명사(물·시간 등)에 써요." },
+  { orig:"원본 15번", q:"빈칸에 알맞은 것은? <span class='en'>He has ____ friends at school.</span>",
+    choices:["many","much","little","a little","one"], answer:"many",
+    exp:"friends(복수, 셀 수 있음)에는 <b>many</b>! much는 셀 수 없는 명사(much water)에만 써요." },
+
+  /* 원본 17 · much + 불가산 (부정문) */
+  { orig:"원본 17번", q:"빈칸에 알맞은 것은? <span class='en'>I don't have ____ money.</span>",
+    choices:["much","many","a few","few","several"], answer:"much",
+    exp:"money는 셀 수 없는 명사! 부정문에서 '많은'은 <b>much</b>예요. many·a few·few·several은 셀 수 있는 명사에 써요." },
+  { orig:"원본 17번", q:"빈칸에 알맞은 것은? <span class='en'>There isn't ____ water in the bottle.</span>",
+    choices:["much","many","a few","few","those"], answer:"much",
+    exp:"water는 셀 수 없어요. '많지 않다'는 <b>much</b>! many·a few·few는 셀 수 있는 명사용이에요." },
+
+  /* 원본 18 · 형용사 고르기 */
+  { orig:"원본 18번", q:"다음 중 <b>형용사</b>(성질·상태를 나타내는 말)는?",
+    choices:["happy","quickly","run","table","slowly"], answer:"happy",
+    exp:"<b>happy</b>(행복한)는 성질·상태를 나타내는 형용사예요. quickly·slowly는 부사, run은 동사, table은 명사랍니다." },
+  { orig:"원본 18번", q:"빈칸에 <b>형용사</b>로 알맞은 것은? <span class='en'>The soup is ____.</span>",
+    choices:["delicious","deliciously","taste","eat","well"], answer:"delicious",
+    exp:"be동사(is) 뒤에서 주어를 설명하는 자리엔 형용사! <b>delicious</b>(맛있는)예요. deliciously는 부사라 be동사 뒤에 못 와요." },
+
+  /* 원본 19 · 관사+형용사+명사 (an exciting) */
+  { orig:"원본 19번", q:"빈칸에 알맞은 것은? <span class='en'>We watched ____ movie.</span>",
+    choices:["an exciting","a exciting","exciting an","excited an","exciting a"], answer:"an exciting",
+    exp:"'관사 + 형용사 + 명사' 순서! exciting은 모음소리로 시작하니 <b>an exciting</b> movie예요. a는 자음소리 앞에 써요." },
+  { orig:"원본 19번", q:"빈칸에 알맞은 것은? <span class='en'>She is reading ____ book.</span>",
+    choices:["an interesting","a interesting","interesting an","interested a","interesting a "], answer:"an interesting",
+    exp:"'재미있는 책'은 <b>an interesting</b> book! 형용사 interesting이 모음소리로 시작해서 an을 써요. 순서는 관사→형용사→명사." },
+
+  /* 원본 20 · a new bike 어순 */
+  { orig:"원본 20번", q:"우리말에 맞게: '나는 <b>새 자전거</b>를 샀다.'<br><span class='en'>I bought ____.</span>",
+    choices:["a new bike","new a bike","bike a new","a bike new","new bike a"], answer:"a new bike",
+    exp:"'관사 + 형용사 + 명사' = <b>a new bike</b>! 우리말 '새 자전거'처럼 형용사(new)가 명사(bike) 앞에 와요." },
+  { orig:"원본 20번", q:"우리말에 맞게: '그녀는 <b>예쁜 인형</b>을 가지고 있다.'<br><span class='en'>She has ____.</span>",
+    choices:["a pretty doll","pretty a doll","doll a pretty","a doll pretty","pretty doll a"], answer:"a pretty doll",
+    exp:"<b>a pretty doll</b>(예쁜 인형)! 관사 a → 형용사 pretty → 명사 doll 순서예요." },
+
+  /* 원본 21 · 형용사가 꾸미는 명사 찾기 */
+  { orig:"원본 21번", q:"형용사가 <b>꾸며주는 명사</b>는? <span class='en'>The kind teacher helped me.</span>",
+    choices:["teacher","kind","helped","me","the"], answer:"teacher",
+    exp:"<b>kind</b>(친절한)가 명사 <b>teacher</b>를 꾸며줘요. '친절한 선생님'이죠!" },
+  { orig:"원본 21번", q:"형용사가 <b>꾸며주는 명사</b>는? <span class='en'>A cute puppy is sleeping.</span>",
+    choices:["puppy","cute","sleeping","is","a"], answer:"puppy",
+    exp:"<b>cute</b>(귀여운)가 <b>puppy</b>(강아지)를 꾸며줘요. sleeping은 '자고 있다'라는 동작이에요." },
+
+  /* 원본 22 · 어법상 틀린 문장 (가산/불가산) */
+  { orig:"원본 22번", q:"다음 중 <b>어법상 틀린</b> 문장은?",
+    choices:["He drank many water.","I have little time.","She has few friends.","They made a few mistakes.","We need a little sugar."], answer:"He drank many water.",
+    exp:"water는 셀 수 없어서 many가 아니라 <b>much</b>를 써요! (많은 물 = much water) many는 셀 수 있는 복수명사에만 써요." },
+  { orig:"원본 22번", q:"다음 중 <b>어법상 틀린</b> 문장은?",
+    choices:["I have few money.","She has many books.","He has little interest.","They ate a few apples.","We had a little rain."], answer:"I have few money.",
+    exp:"money는 셀 수 없어서 few가 아니라 <b>little</b>! (돈이 거의 없다 = little money) few는 셀 수 있는 명사(few friends)에 써요. 원본에서 지민이가 헷갈렸던 부분이에요 😊" },
+
+  /* 원본 23 · 형용사 여러 개 + 명사 */
+  { orig:"원본 23번", q:"형용사가 <b>꾸며주는 명사</b>는? <span class='en'>I have a small and cute cat.</span>",
+    choices:["cat","small","cute","have","and"], answer:"cat",
+    exp:"small(작은)과 cute(귀여운) 두 형용사가 모두 명사 <b>cat</b>을 꾸며줘요." },
+  { orig:"원본 23번", q:"형용사가 <b>꾸며주는 명사</b>는? <span class='en'>She wore a long and warm coat.</span>",
+    choices:["coat","long","warm","wore","and"], answer:"coat",
+    exp:"long(긴)·warm(따뜻한)이 함께 명사 <b>coat</b>(코트)를 꾸며줘요." },
+
+  /* 원본 24 · some → any (부정문) */
+  { orig:"원본 24번", q:"빈칸에 알맞은 것은? <span class='en'>There aren't ____ apples on the table.</span>",
+    choices:["any","some","much","this","that"], answer:"any",
+    exp:"부정문(aren't)에서는 some 대신 <b>any</b>를 써요! 긍정문이면 some을 쓴답니다." },
+  { orig:"원본 24번", q:"빈칸에 알맞은 것은? <span class='en'>I don't have ____ questions.</span>",
+    choices:["any","some","much","a little","little"], answer:"any",
+    exp:"부정문 don't에는 <b>any</b>! '질문이 하나도 없다'는 뜻이에요. some은 주로 긍정문에 써요." },
+
+  /* 원본 26 · much + homework (불가산) */
+  { orig:"원본 26번", q:"빈칸에 알맞은 것은? <span class='en'>I have too ____ homework today.</span>",
+    choices:["much","many","a few","few","several"], answer:"much",
+    exp:"homework는 셀 수 없는 명사! '너무 많은'은 <b>much</b>예요. many·a few는 셀 수 있는 명사에 써요." },
+  { orig:"원본 26번", q:"빈칸에 알맞은 것은? <span class='en'>He doesn't have ____ information.</span>",
+    choices:["much","many","a few","few","several"], answer:"much",
+    exp:"information도 셀 수 없어요. '많은 정보'는 <b>much</b> information! many를 쓰면 안 돼요." },
+
+  /* 원본 27 · a few + 복수명사 (몇) */
+  { orig:"원본 27번", q:"우리말에 맞게: '나는 <b>며칠 전에</b> 그를 만났다.'<br><span class='en'>I met him ____ days ago.</span>",
+    choices:["a few","a little","much","little","one"], answer:"a few",
+    exp:"'며칠 전' = <b>a few</b> days ago! days는 셀 수 있는 복수명사라 a little이 아니라 a few를 써요. '몇몇의'라는 뜻이에요." },
+  { orig:"원본 27번", q:"우리말에 맞게: '그녀는 <b>사과 몇 개</b>를 샀다.'<br><span class='en'>She bought ____ apples.</span>",
+    choices:["a few","a little","much","little","that"], answer:"a few",
+    exp:"apples(셀 수 있는 복수)에는 <b>a few</b>(몇 개의)! a little은 셀 수 없는 명사(a little water)에 써요." },
+
+  /* 원본 28 · few vs little (거의 없다) */
+  { orig:"원본 28번", q:"우리말에 맞게: '병에 <b>물이 거의 없다</b>.'<br><span class='en'>There is ____ water in the bottle.</span>",
+    choices:["little","few","a little","a few","many"], answer:"little",
+    exp:"water는 셀 수 없고 '거의 없다'(부정)라서 <b>little</b>! a little(조금 있다)이나 few(셀 수 있는 명사용)와 헷갈리지 마세요." },
+  { orig:"원본 28번", q:"우리말에 맞게: '그 마을에는 <b>학생이 거의 없다</b>.'<br><span class='en'>There are ____ students in the village.</span>",
+    choices:["few","little","a few","a little","much"], answer:"few",
+    exp:"students는 셀 수 있는 복수명사이고 '거의 없다'라서 <b>few</b>! water 같은 셀 수 없는 명사면 little을 써요." },
+
+  /* 원본 29 · a lot of vs many (불가산) */
+  { orig:"원본 29번", q:"빈칸에 알맞은 것은? <span class='en'>There is ____ juice in the cup.</span>",
+    choices:["a lot of","many","a few","few","several"], answer:"a lot of",
+    exp:"juice는 셀 수 없어요. '많은'은 many가 아니라 <b>a lot of</b>! a lot of는 셀 수 있는 것·없는 것 모두에 쓸 수 있어 편리해요." },
+  { orig:"원본 29번", q:"빈칸에 알맞은 것은? <span class='en'>____ people came to the festival.</span>",
+    choices:["A lot of","Much","A little","Little","This"], answer:"A lot of",
+    exp:"people(사람들, 셀 수 있음)에는 <b>A lot of</b>(또는 Many)! much·a little·little은 셀 수 없는 명사용이라 안 돼요." },
+
+  /* 원본 30 · make + 목적어 + 형용사 (5형식) */
+  { orig:"원본 30번", q:"우리말에 맞게: '그 소식은 <b>나를 슬프게 만들었다</b>.'<br><span class='en'>The news made ____.</span>",
+    choices:["me sad","sad me","I sad","sad I","me sadly"], answer:"me sad",
+    exp:"'make + 목적어 + 형용사' = '~를 …하게 만들다'! <b>me sad</b>예요. 부사 sadly가 아니라 형용사 sad를 써요." },
+  { orig:"원본 30번", q:"우리말에 맞게: '그 영화는 <b>우리를 행복하게 만들었다</b>.'<br><span class='en'>The movie made ____.</span>",
+    choices:["us happy","happy us","we happy","happy we","us happily"], answer:"us happy",
+    exp:"'make + 목적어(us) + 형용사(happy)' 순서! <b>us happy</b>예요. 부사 happily 말고 형용사 happy를 써요." }
+];
+
+/* ══════ 보기 균등 분산 셔플 ══════ */
+function shuffleInPlace(a) {
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+function balancedShuffle() {
+  var n = QUESTIONS.length;
+  var slots = 5;
+  var base = Math.floor(n / slots);
+  var pool = [];
+  for (var p = 0; p < slots; p++) for (var k = 0; k < base; k++) pool.push(p);
+  var extra = n % slots;
+  var extraPos = shuffleInPlace([0,1,2,3,4]).slice(0, extra);
+  for (var e = 0; e < extra; e++) pool.push(extraPos[e]);
+  shuffleInPlace(pool);
+  QUESTIONS.forEach(function (q, idx) {
+    var target = pool[idx];
+    var arr = q.choices.slice();
+    shuffleInPlace(arr);
+    var ai = arr.indexOf(q.answer);
+    if (target >= arr.length) target = arr.length - 1;
+    var tmp = arr[target]; arr[target] = arr[ai]; arr[ai] = tmp;
+    q.choices = arr;
+  });
+}
+
+/* ══════ 진행 로직 ══════ */
+var studentName = "";
+var current = 0;
+var correctCount = 0;
+var wrongNumbers = [];
+var answersLog = [];
+var startTime = 0;
+
+var nameInput = document.getElementById("name-input");
+var startBtn = document.getElementById("start-btn");
+
+nameInput.addEventListener("input", function () {
+  startBtn.disabled = nameInput.value.trim().length === 0;
+});
+
+startBtn.addEventListener("click", startQuiz);
+function startQuiz() {
+  studentName = nameInput.value.trim();
+  if (!studentName) return;
+  balancedShuffle();
+  startTime = Date.now();
+  document.getElementById("start-card").classList.add("hidden");
+  document.getElementById("quiz-card").classList.remove("hidden");
+  showQuestion();
+}
+
+var CIRCLED = ["①", "②", "③", "④", "⑤"];
+
+function showQuestion() {
+  var q = QUESTIONS[current];
+  document.getElementById("progress").textContent = "문제 " + (current + 1) + " / " + QUESTIONS.length;
+  document.getElementById("bar-fill").style.width = ((current) / QUESTIONS.length * 100) + "%";
+  document.getElementById("qorig").textContent = q.orig;
+  document.getElementById("qtext").innerHTML = "Q" + (current + 1) + ". " + q.q;
+  var box = document.getElementById("choices");
+  box.innerHTML = "";
+  q.choices.forEach(function (c, i) {
+    var b = document.createElement("button");
+    b.className = "choice";
+    b.innerHTML = '<span class="num">' + CIRCLED[i] + "</span><span>" + c + "</span>";
+    b.addEventListener("click", function () { pick(c); });
+    box.appendChild(b);
+  });
+}
+
+var locked = false;
+function pick(choice) {
+  if (locked) return; locked = true;
+  var q = QUESTIONS[current];
+  var ok = choice === q.answer;
+  if (ok) correctCount++;
+  else wrongNumbers.push(current + 1);
+  answersLog.push({ no: current + 1, ok: ok, chosen: choice, answer: q.answer });
+  setTimeout(function () {
+    locked = false;
+    current++;
+    if (current < QUESTIONS.length) showQuestion();
+    else showResult();
+  }, 250);
+}
+
+document.addEventListener("keydown", function (e) {
+  if (document.getElementById("quiz-card").classList.contains("hidden")) return;
+  var idx = ["1","2","3","4","5"].indexOf(e.key);
+  if (idx === -1) return;
+  var q = QUESTIONS[current];
+  if (idx < q.choices.length) pick(q.choices[idx]);
+});
+
+function buildKakaoMsg() {
+  return "[영핏 오답 클리닉 결과]\n" +
+         "학생: " + studentName + "\n" +
+         "클리닉: 수량형용사·형용사 변형문제\n" +
+         "점수: " + correctCount + " / " + QUESTIONS.length + "\n" +
+         "틀린 문항: " + (wrongNumbers.length ? wrongNumbers.join(", ") : "없음 (전부 정답!)") + "\n" +
+         "제공: 영핏 지나티처";
+}
+
+function showResult() {
+  document.getElementById("bar-fill").style.width = "100%";
+  document.getElementById("quiz-card").classList.add("hidden");
+  document.getElementById("result-card").classList.remove("hidden");
+  document.getElementById("score-line").textContent = correctCount + " / " + QUESTIONS.length;
+
+  var pct = Math.round(correctCount / QUESTIONS.length * 100);
+  var msg;
+  if (pct === 100) msg = "완벽해요! 수량형용사를 확실히 이해했어요 👏";
+  else if (pct >= 80) msg = "아주 잘했어요! 조금만 더 다지면 완벽해요.";
+  else if (pct >= 60) msg = "잘하고 있어요! 틀린 문제 해설을 꼭 읽어봐요.";
+  else msg = "천천히 다시 복습해봐요. 해설을 함께 읽으면 쉬워져요 💪";
+  document.getElementById("score-msg").textContent = msg;
+
+  var expBox = document.getElementById("explanations");
+  QUESTIONS.forEach(function (q, i) {
+    var log = answersLog[i];
+    var d = document.createElement("div");
+    d.className = "exp" + (log.ok ? "" : " wrong");
+    var head = log.ok
+      ? "Q" + (i + 1) + ". 정답! ✓ (" + q.orig + ")"
+      : "Q" + (i + 1) + ". 다시 볼까요 — 내 답: " + log.chosen + " → 정답: " + q.answer + " (" + q.orig + ")";
+    d.innerHTML = "<span class='head'>" + head + "</span>" + q.exp;
+    expBox.appendChild(d);
+  });
+
+  engfitSubmitWithStatus({
+    quizId: "clinic-hanjimin-0708",
+    quizTitle: "한지민 오답 클리닉 (수량형용사·형용사) 7/8",
+    student: studentName,
+    score: correctCount,
+    total: QUESTIONS.length,
+    wrong: wrongNumbers,
+    durationSec: Math.round((Date.now() - startTime) / 1000),
+    detail: answersLog
+  });
+}
+
+document.getElementById("kakao-btn").addEventListener("click", function () {
+  var msg = buildKakaoMsg();
+  var box = document.getElementById("kakao-box");
+  navigator.clipboard.writeText(msg).then(function () {
+    document.getElementById("kakao-btn").textContent = "복사 완료! 카톡에 붙여넣기 하세요 ✓";
+    box.textContent = msg; box.classList.remove("hidden");
+  }).catch(function () {
+    box.textContent = msg; box.classList.remove("hidden");
+  });
+});
+</script>
+</body>
+</html>
