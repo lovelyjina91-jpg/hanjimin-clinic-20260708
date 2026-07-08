@@ -49,7 +49,7 @@
   <div class="card" id="start-card">
     <span class="tag">오답 클리닉 · 변형문제</span>
     <h1>한지민 학생 클리닉 🌱</h1>
-    <p class="sub">수량형용사(many·much·few·little·some·any)와 형용사 어순을 복습해요.<br>원본 시험 문제를 변형한 <b>32문항</b>이에요. 이름을 입력하고 시작하세요!</p>
+    <p class="sub">수량형용사(many·much·few·little·some·any)와 형용사 어순을 복습해요.<br>원본 시험 문제를 변형한 <b>38문항</b>이에요. 이름을 입력하고 시작하세요!</p>
     <input type="text" id="name-input" placeholder="이름을 입력하세요" maxlength="20" autocomplete="off">
     <button class="btn" id="start-btn" disabled>시작하기</button>
     <p class="brand">제공 · 영핏 지나티처</p>
@@ -241,7 +241,31 @@ var QUESTIONS = [
     exp:"'make + 목적어 + 형용사' = '~를 …하게 만들다'! <b>me sad</b>예요. 부사 sadly가 아니라 형용사 sad를 써요." },
   { orig:"원본 30번", q:"우리말에 맞게: '그 영화는 <b>우리를 행복하게 만들었다</b>.'<br><span class='en'>The movie made ____.</span>",
     choices:["us happy","happy us","we happy","happy we","us happily"], answer:"us happy",
-    exp:"'make + 목적어(us) + 형용사(happy)' 순서! <b>us happy</b>예요. 부사 happily 말고 형용사 happy를 써요." }
+    exp:"'make + 목적어(us) + 형용사(happy)' 순서! <b>us happy</b>예요. 부사 happily 말고 형용사 happy를 써요." },
+
+  /* 원본 52 · 형용사 vs 부사 (어법상 맞는 것) */
+  { orig:"원본 52번", q:"다음 중 <b>어법상 맞는</b> 문장은?",
+    choices:["The baby has a cute smile.","He is a quietly boy.","She sang a beautifully song.","The soup smells badly.","They run very quick."], answer:"The baby has a cute smile.",
+    exp:"형용사는 명사를 꾸며요. <b>cute</b>(형용사) + smile(명사) ✓! quietly·beautifully는 부사라 명사를 못 꾸미고, smell 같은 감각동사 뒤엔 형용사(bad), 동사 run은 부사(quickly)로 꾸며요." },
+  { orig:"원본 52번", q:"다음 중 <b>어법상 맞는</b> 문장은?",
+    choices:["The flower looks lovely.","She is a slowly walker.","He drew with colorfully pens.","The music sounds nicely.","A happily child smiled."], answer:"The flower looks lovely.",
+    exp:"look·sound·smell 같은 감각동사 뒤엔 형용사! <b>looks lovely</b> ✓. slowly·colorfully·nicely·happily는 부사라 명사 수식이나 감각동사 뒤에 올 수 없어요." },
+
+  /* 원본 56 · 셀 수 있는/없는 명사 짝 (many times - a little) */
+  { orig:"원본 56번", q:"빈칸에 순서대로 알맞은 것은?<br><span class='en'>Mina is on a diet. She eats ____ times a day, but eats ____ each time.</span>",
+    choices:["many - a little","much - little","a lot of - few","many - a few","much - a little"], answer:"many - a little",
+    exp:"times는 셀 수 있어서 <b>many</b> times! 매번 먹는 양(food)은 셀 수 없고 '조금'이라 <b>a little</b>! (다이어트라 자주 먹되 조금씩) much times나 few each는 안 맞아요." },
+  { orig:"원본 56번", q:"빈칸에 순서대로 알맞은 것은?<br><span class='en'>I bought ____ apples, but there is only ____ juice left.</span>",
+    choices:["a few - a little","a little - a few","much - a few","a few - many","little - much"], answer:"a few - a little",
+    exp:"apples는 셀 수 있어서 <b>a few</b>(몇 개), juice는 셀 수 없어서 <b>a little</b>(조금)! 명사가 셀 수 있는지 없는지에 따라 짝이 달라져요." },
+
+  /* 원본 36 · a few + 복수명사(-s) */
+  { orig:"원본 36번", q:"우리말에 맞게: '탁자 위에 <b>사과 몇 개</b>가 있다.'<br><span class='en'>There are a few ____ on the table.</span>",
+    choices:["apples","apple","a apple","an apple","apple's"], answer:"apples",
+    exp:"a few 뒤에는 <b>셀 수 있는 명사의 복수형</b>이 와요! apple이 아니라 <b>apples</b>(-s 꼭!). 원본에서 problem을 problems로 안 고쳐서 틀렸던 부분이에요 😊" },
+  { orig:"원본 36번", q:"우리말에 맞게: '나는 <b>질문이 몇 개</b> 있다.'<br><span class='en'>I have a few ____.</span>",
+    choices:["questions","question","a question","much question","question's"], answer:"questions",
+    exp:"a few + 복수명사! <b>questions</b>(-s 꼭 붙이기). a few는 '몇 개의'라는 뜻이라 뒤에 셀 수 있는 명사의 복수형이 온답니다." }
 ];
 
 /* ══════ 보기 균등 분산 셔플 ══════ */
