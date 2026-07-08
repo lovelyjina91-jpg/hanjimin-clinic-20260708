@@ -49,7 +49,7 @@
   <div class="card" id="start-card">
     <span class="tag">오답 클리닉 · 변형문제</span>
     <h1>한지민 학생 클리닉 🌱</h1>
-    <p class="sub">수량형용사(many·much·few·little·some·any)와 형용사 어순을 복습해요.<br>원본 시험 문제를 변형한 <b>38문항</b>이에요. 이름을 입력하고 시작하세요!</p>
+    <p class="sub">수량형용사(many·much·few·little·some·any)와 형용사 어순을 복습해요.<br>원본 시험 문제를 변형한 <b>40문항</b>이에요. 이름을 입력하고 시작하세요!</p>
     <input type="text" id="name-input" placeholder="이름을 입력하세요" maxlength="20" autocomplete="off">
     <button class="btn" id="start-btn" disabled>시작하기</button>
     <p class="brand">제공 · 영핏 지나티처</p>
@@ -265,7 +265,15 @@ var QUESTIONS = [
     exp:"a few 뒤에는 <b>셀 수 있는 명사의 복수형</b>이 와요! apple이 아니라 <b>apples</b>(-s 꼭!). 원본에서 problem을 problems로 안 고쳐서 틀렸던 부분이에요 😊" },
   { orig:"원본 36번", q:"우리말에 맞게: '나는 <b>질문이 몇 개</b> 있다.'<br><span class='en'>I have a few ____.</span>",
     choices:["questions","question","a question","much question","question's"], answer:"questions",
-    exp:"a few + 복수명사! <b>questions</b>(-s 꼭 붙이기). a few는 '몇 개의'라는 뜻이라 뒤에 셀 수 있는 명사의 복수형이 온답니다." }
+    exp:"a few + 복수명사! <b>questions</b>(-s 꼭 붙이기). a few는 '몇 개의'라는 뜻이라 뒤에 셀 수 있는 명사의 복수형이 온답니다." },
+
+  /* 원본 66 · 형용사 위치 (명사 앞) */
+  { orig:"원본 66번", q:"다음 중 <b>어법상 맞는</b> 문장은? (형용사 위치)",
+    choices:["Giant monsters are hiding under the bed.","Monsters giant are hiding under the bed.","A dog brown is running fast.","She has a car red.","I saw birds beautiful."], answer:"Giant monsters are hiding under the bed.",
+    exp:"형용사는 꾸며주는 명사 <b>앞</b>에 와요! <b>Giant monsters</b>(거대한 괴물들) ✓. 'Monsters giant'처럼 명사 뒤에 두면 틀려요. brown dog·red car·beautiful birds도 모두 형용사가 명사 앞!" },
+  { orig:"원본 66번", q:"다음 문장에서 <b>틀린 부분</b>을 바르게 고친 것은?<br><span class='en'>I have a puppy cute.</span>",
+    choices:["a cute puppy","a puppy cute","cute a puppy","puppy a cute","cute puppy a"], answer:"a cute puppy",
+    exp:"형용사 cute는 명사 puppy <b>앞</b>에 와야 해요 → <b>a cute puppy</b>! 'a puppy cute'처럼 형용사를 명사 뒤에 두면 틀려요. (원본 66번처럼 형용사 위치 실수예요!)" }
 ];
 
 /* ══════ 보기 균등 분산 셔플 ══════ */
